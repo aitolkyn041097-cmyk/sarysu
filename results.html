@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="kk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="«Сарысудың екінші өмірі» сауалнамасының нәтижелері">
+<title>Сауалнама нәтижелері — Сарысудың екінші өмірі</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&family=Unbounded:wght@500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#F6F9EE;--card:#FFFFFF;--whey:#EEF3D6;--ink:#1F3A2B;--muted:#4E6656;
+  --green:#2F6B45;--green-d:#24563A;--leaf:#8DB64A;--wheat:#E3B23C;--sky:#3E8DB8;
+  --line:#D7E2BF;--track:#E8EFD6;box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)
+}
+@media (prefers-color-scheme:dark){
+  :root{--bg:#13201A;--card:#1B2B22;--whey:#22362A;--ink:#E7EFDF;--muted:#A9BCA9;--green:#7FC48F;--green-d:#97D3A5;--leaf:#A7CC62;--line:#2F4A39;--track:#2A3F32}
+}
+*,*::before,*::after{box-sizing:inherit}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:'Nunito','Segoe UI',Arial,sans-serif;font-size:17px;line-height:1.55}
+h1,h2,h3{font-family:'Unbounded','Segoe UI',Arial,sans-serif;color:var(--green);letter-spacing:-.01em;line-height:1.2}
+a{color:inherit}
+:focus-visible{outline:3px solid var(--wheat);outline-offset:3px}
+.wrap{max-width:1040px;margin:0 auto;padding:1.25rem 1rem 3rem}
+.topbar{display:flex;align-items:center;justify-content:space-between;gap:1rem;margin-bottom:1rem}
+.back-link{display:inline-flex;align-items:center;gap:.45rem;text-decoration:none;color:var(--green);font-weight:800;padding:.5rem .15rem}
+.back-link span{transition:transform .2s ease}
+.back-link:hover span{transform:translateX(-3px)}
+.project-name{font-size:.88rem;color:var(--muted);text-align:right}
+.hero{position:relative;overflow:hidden;background:linear-gradient(135deg,var(--whey),var(--card));border:2px solid var(--leaf);border-radius:28px;padding:clamp(1.4rem,4vw,2.6rem);margin-bottom:1rem}
+.hero::before,.hero::after{content:"";position:absolute;border-radius:50%;background:color-mix(in srgb,var(--leaf) 18%,transparent)}
+.hero::before{width:220px;height:220px;right:-75px;top:-115px}
+.hero::after{width:110px;height:110px;right:110px;bottom:-70px}
+.eyebrow{display:inline-flex;align-items:center;gap:.45rem;padding:.35rem .75rem;border-radius:999px;background:var(--card);border:1px solid var(--line);color:var(--green);font-size:.84rem;font-weight:800;position:relative;z-index:1}
+.hero h1{font-size:clamp(1.65rem,5vw,3rem);margin:.85rem 0 .45rem;max-width:760px;position:relative;z-index:1}
+.hero p{font-size:clamp(1rem,2vw,1.18rem);margin:0;color:var(--muted);position:relative;z-index:1}
+.hero strong{color:var(--green)}
+.stats{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:.75rem;margin:1rem 0}
+.stat{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:1rem;box-shadow:0 10px 28px rgba(31,58,43,.06);transition:transform .2s ease,box-shadow .2s ease,border-color .2s ease}
+.stat:first-child{background:var(--green);border-color:var(--green);color:#fff}
+.stat:hover{transform:translateY(-4px);border-color:var(--leaf);box-shadow:0 14px 34px rgba(31,58,43,.12)}
+.stat-icon{font-size:1.35rem;display:block;line-height:1;margin-bottom:.7rem}
+.stat-number{font-family:'Unbounded',sans-serif;font-size:clamp(1.45rem,3vw,2.05rem);font-weight:700;line-height:1;color:var(--green);font-variant-numeric:tabular-nums}
+.stat:first-child .stat-number{color:#fff}
+.stat-label{font-size:.9rem;color:var(--muted);margin-top:.45rem}
+.stat:first-child .stat-label{color:rgba(255,255,255,.86)}
+.grid{display:grid;grid-template-columns:minmax(280px,.82fr) minmax(0,1.18fr);gap:1rem;margin-top:1rem}
+.card{background:var(--card);border:1px solid var(--line);border-radius:22px;padding:clamp(1rem,3vw,1.45rem);min-width:0}
+.card h2{font-size:clamp(1.05rem,2.6vw,1.3rem);margin:0 0 .25rem}
+.card-sub{color:var(--muted);font-size:.92rem;margin:0 0 1.2rem}
+.donut-layout{display:flex;align-items:center;justify-content:center;gap:1.3rem;flex-wrap:wrap}
+.donut{width:190px;height:190px;border-radius:50%;position:relative;flex:0 0 auto;transform:rotate(-90deg);transition:background .5s ease}
+.donut::after{content:"";position:absolute;inset:25%;border-radius:50%;background:var(--card)}
+.donut-center{position:absolute;inset:25%;display:flex;align-items:center;justify-content:center;flex-direction:column;z-index:1;transform:rotate(90deg);font-family:'Unbounded',sans-serif;color:var(--green);font-size:1.4rem;font-weight:700}
+.donut-center small{font-family:'Nunito',sans-serif;font-size:.68rem;color:var(--muted);font-weight:700}
+.legend{list-style:none;margin:0;padding:0;flex:1 1 150px}
+.legend li{display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:.55rem;margin:.48rem 0;font-size:.92rem}
+.legend-dot{width:.78rem;height:.78rem;border-radius:4px}
+.legend b{font-variant-numeric:tabular-nums;white-space:nowrap}
+.bars{display:grid;gap:1rem}
+.bar-head{display:flex;align-items:flex-end;justify-content:space-between;gap:.8rem;margin-bottom:.35rem}
+.bar-label{font-weight:800}
+.bar-value{font-size:.9rem;color:var(--muted);white-space:nowrap;font-variant-numeric:tabular-nums}
+.track{height:.86rem;border-radius:999px;background:var(--track);overflow:hidden}
+.fill{width:0;height:100%;border-radius:999px;transition:width .9s cubic-bezier(.2,.7,.2,1)}
+.scope{margin-top:1rem}
+.topics{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.65rem;margin-top:1rem}
+.topic{display:flex;align-items:flex-start;gap:.7rem;background:var(--whey);border-radius:14px;padding:.8rem .9rem}
+.topic span{font-size:1.15rem;line-height:1.3}
+.topic b{display:block;font-size:.93rem}
+.topic small{display:block;color:var(--muted);margin-top:.08rem}
+.notice{margin-top:1rem;border-left:5px solid var(--wheat);background:color-mix(in srgb,var(--wheat) 12%,var(--card));border-radius:0 14px 14px 0;padding:.8rem 1rem;color:var(--muted)}
+.actions{display:flex;justify-content:center;margin-top:1.4rem}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:.5rem;background:var(--green);color:#fff;text-decoration:none;border-radius:999px;padding:.78rem 1.5rem;font-weight:800;box-shadow:0 8px 20px rgba(47,107,69,.2);transition:transform .2s ease,box-shadow .2s ease,background .2s ease}
+.btn:hover{background:var(--green-d);transform:translateY(-2px);box-shadow:0 12px 26px rgba(47,107,69,.28)}
+.foot{margin-top:1.8rem;text-align:center;color:var(--muted);font-size:.85rem}
+@media (prefers-color-scheme:dark){.stat:first-child,.btn{color:#13201A}.stat:first-child .stat-label{color:rgba(19,32,26,.76)}}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}.stat,.back-link span,.btn,.fill,.donut{transition:none}}
+@media (max-width:820px){.stats{grid-template-columns:repeat(2,minmax(0,1fr))}.stat:first-child{grid-column:1/-1}.grid{grid-template-columns:1fr}}
+@media (max-width:520px){body{font-size:16px}.wrap{padding:.8rem .75rem 2rem}.topbar{align-items:flex-start}.project-name{max-width:150px}.hero{border-radius:22px}.stats{gap:.55rem}.stat{padding:.85rem}.donut{width:170px;height:170px}.topics{grid-template-columns:1fr}.btn{width:100%}}
+</style>
+</head>
+<body>
+<main class="wrap">
+  <div class="topbar">
+    <a class="back-link" href="index.html"><span aria-hidden="true">←</span> Басты бет</a>
+    <div class="project-name">«Сарысудың екінші өмірі» жобасы</div>
+  </div>
+
+  <header class="hero">
+    <span class="eyebrow">📊 Демонстрациялық қорытынды</span>
+    <h1>Сауалнама нәтижелері</h1>
+    <p>Сауалнамаға <strong data-total-text>116</strong> адам қатысты</p>
+  </header>
+
+  <section class="stats" id="stats" aria-label="Қатысушылар статистикасы"></section>
+
+  <div class="grid">
+    <section class="card" aria-labelledby="donutTitle">
+      <h2 id="donutTitle">Қатысушылар құрамы</h2>
+      <p class="card-sub">Барлық 116 қатысушының санаттар бойынша үлесі</p>
+      <div class="donut-layout">
+        <div class="donut" id="donut" role="img" aria-label="Қатысушылар санаттарының дөңгелек диаграммасы">
+          <div class="donut-center"><span data-count="116">116</span><small>адам</small></div>
+        </div>
+        <ul class="legend" id="legend"></ul>
+      </div>
+    </section>
+
+    <section class="card" aria-labelledby="barsTitle">
+      <h2 id="barsTitle">Санаттар бойынша бөлініс</h2>
+      <p class="card-sub">Қатысушылар саны мен жалпы көрсеткіштегі пайызы</p>
+      <div class="bars" id="bars"></div>
+    </section>
+  </div>
+
+  <section class="card scope" aria-labelledby="scopeTitle">
+    <h2 id="scopeTitle">Сауалнама қамтитын тақырыптар</h2>
+    <p class="card-sub">Анкета сарысуды қайта пайдалану туралы пікір мен тәжірибені зерттейді</p>
+    <div class="topics">
+      <div class="topic"><span aria-hidden="true">💡</span><div><b>Хабардарлық</b><small>Сарысу туралы білім деңгейі</small></div></div>
+      <div class="topic"><span aria-hidden="true">🏠</span><div><b>Үйде пайдалану</b><small>Сарысуды қолдану тәсілдері</small></div></div>
+      <div class="topic"><span aria-hidden="true">🥤</span><div><b>Қажетті өнімдер</b><small>Қатысушылар көргісі келетін өнімдер</small></div></div>
+      <div class="topic"><span aria-hidden="true">♻️</span><div><b>Қайта пайдалануға көзқарас</b><small>Маңыздылық, сатып алу және кедергілер</small></div></div>
+    </div>
+    <p class="notice">Бұл бетте тек расталған қатысушылар саны мен санаттары көрсетілген. Қалған сұрақтар бойынша деректер берілмегендіктен, олар үшін нәтиже жасалмады.</p>
+  </section>
+
+  <div class="actions">
+    <a class="btn" href="index.html"><span aria-hidden="true">←</span> Басты бетке оралу</a>
+  </div>
+
+  <p class="foot">Деректер демонстрациялық түрде берілген және форманы толтырғанда автоматты түрде өзгермейді.</p>
+</main>
+
+<script src="survey-results.js"></script>
+<script>
+(function(){
+  "use strict";
+  const data = window.SARYSU_RESULTS;
+  if (!data) return;
+  const sum = data.groups.reduce((total, group) => total + group.value, 0);
+  if (sum !== data.total) {
+    document.body.textContent = "Деректерді тексеру қажет: санаттар қосындысы жалпы санға тең емес.";
+    return;
+  }
+
+  const percent = value => value / data.total * 100;
+  const formatPercent = value => `${percent(value).toFixed(1).replace(".", ",")}%`;
+  document.querySelector("[data-total-text]").textContent = data.total;
+
+  const stats = document.querySelector("#stats");
+  const items = [{label:"Барлығы",value:data.total,icon:"👥"}, ...data.groups];
+  items.forEach(item => {
+    const card = document.createElement("article");
+    card.className = "stat";
+    card.innerHTML = `<span class="stat-icon" aria-hidden="true">${item.icon}</span><div class="stat-number" data-count="${item.value}">${item.value}</div><div class="stat-label">${item.label}</div>`;
+    stats.append(card);
+  });
+
+  let angle = 0;
+  const stops = data.groups.map(group => {
+    const start = angle;
+    angle += percent(group.value) * 3.6;
+    return `${group.color} ${start}deg ${angle}deg`;
+  });
+  const donut = document.querySelector("#donut");
+  donut.style.background = `conic-gradient(${stops.join(",")})`;
+  donut.setAttribute("aria-label", data.groups.map(group => `${group.label}: ${group.value} адам, ${formatPercent(group.value)}`).join("; "));
+
+  const legend = document.querySelector("#legend");
+  const bars = document.querySelector("#bars");
+  data.groups.forEach(group => {
+    const legendItem = document.createElement("li");
+    legendItem.innerHTML = `<span class="legend-dot" style="background:${group.color}"></span><span>${group.label}</span><b>${formatPercent(group.value)}</b>`;
+    legend.append(legendItem);
+
+    const row = document.createElement("div");
+    row.className = "bar-row";
+    row.innerHTML = `<div class="bar-head"><span class="bar-label">${group.icon} ${group.label}</span><span class="bar-value">${group.value} адам · ${formatPercent(group.value)}</span></div><div class="track"><div class="fill" data-width="${percent(group.value)}" style="background:${group.color}"></div></div>`;
+    bars.append(row);
+  });
+
+  const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const countUp = node => {
+    const target = Number(node.dataset.count);
+    if (reducedMotion) { node.textContent = target; return; }
+    const start = performance.now();
+    const tick = now => {
+      const progress = Math.min((now - start) / 900, 1);
+      node.textContent = Math.round(target * (1 - Math.pow(1 - progress, 3)));
+      if (progress < 1) requestAnimationFrame(tick);
+    };
+    requestAnimationFrame(tick);
+  };
+  requestAnimationFrame(() => {
+    document.querySelectorAll("[data-count]").forEach(countUp);
+    document.querySelectorAll(".fill").forEach(fill => { fill.style.width = `${fill.dataset.width}%`; });
+  });
+})();
+</script>
+</body>
+</html>
