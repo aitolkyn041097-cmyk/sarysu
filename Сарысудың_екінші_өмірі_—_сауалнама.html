@@ -1,0 +1,538 @@
+<!DOCTYPE html>
+<html lang="kk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Сарысудың екінші өмірі — сауалнама</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&family=Unbounded:wght@500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#F6F9EE; --card:#FFFFFF; --whey:#EEF3D6; --ink:#1F3A2B; --muted:#4E6656;
+  --green:#2F6B45; --green-d:#24563A; --leaf:#8DB64A; --wheat:#E3B23C; --sky:#3E8DB8;
+  --line:#D7E2BF; --track:#E8EFD6; --err:#A63D2F; --ok:#2F6B45;
+  --c1:#2F6B45; --c2:#8DB64A; --c3:#E3B23C; --c4:#3E8DB8; --c5:#9C6644; --c6:#7A5C99; --c7:#5FA8A0; --c8:#B9C9A0;
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#13201A; --card:#1B2B22; --whey:#22362A; --ink:#E7EFDF; --muted:#A9BCA9;
+    --green:#7FC48F; --green-d:#97D3A5; --leaf:#A7CC62; --line:#2F4A39; --track:#2A3F32; --err:#F08C7A; --ok:#7FC48F;
+    --c1:#7FC48F; --c8:#5E7350;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#13201A; --card:#1B2B22; --whey:#22362A; --ink:#E7EFDF; --muted:#A9BCA9;
+  --green:#7FC48F; --green-d:#97D3A5; --leaf:#A7CC62; --line:#2F4A39; --track:#2A3F32; --err:#F08C7A; --ok:#7FC48F;
+  --c1:#7FC48F; --c8:#5E7350;
+}
+*,*::before,*::after{box-sizing:inherit}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:'Nunito','Segoe UI',Arial,sans-serif;font-size:17px;line-height:1.55}
+h1,h2,h3{font-family:'Unbounded','Segoe UI',Arial,sans-serif;color:var(--green);letter-spacing:-.01em;line-height:1.2}
+.wrap{max-width:1040px;margin:0 auto;padding:1.25rem 1rem 3rem}
+button,input,textarea{font:inherit;color:inherit}
+:focus-visible{outline:3px solid var(--wheat);outline-offset:2px}
+
+/* hero */
+.hero{display:flex;align-items:center;gap:1.5rem;flex-wrap:wrap;background:var(--whey);border:2px solid var(--leaf);border-radius:28px;padding:1.5rem 1.6rem;margin-bottom:1.2rem}
+.hero svg{flex:0 0 auto}
+.hero-text{flex:1 1 300px;min-width:0}
+.hero h1{font-size:clamp(1.5rem,4.2vw,2.4rem);margin:0 0 .45rem}
+.hero .sub{margin:0 0 .8rem;font-size:1.08rem}
+.hero .people{font-size:.97rem;line-height:1.6}
+.hero .people b{color:var(--green)}
+.live{flex:0 0 auto;text-align:center;background:var(--card);border:2px solid var(--leaf);border-radius:22px;padding:.9rem 1.3rem;min-width:120px}
+.live .n{font-family:'Unbounded',sans-serif;font-size:2.4rem;color:var(--green);line-height:1}
+.live .t{font-size:.9rem}
+.status{display:inline-flex;align-items:center;gap:.4rem;font-size:.85rem;color:var(--muted);margin-top:.35rem}
+.dot{width:.55rem;height:.55rem;border-radius:50%;background:var(--muted)}
+.dot.on{background:#3FAE5A;box-shadow:0 0 0 0 rgba(63,174,90,.5);animation:pulse 2s infinite}
+@media (prefers-reduced-motion: reduce){.dot.on{animation:none}}
+@keyframes pulse{0%{box-shadow:0 0 0 0 rgba(63,174,90,.45)}70%{box-shadow:0 0 0 8px rgba(63,174,90,0)}100%{box-shadow:0 0 0 0 rgba(63,174,90,0)}}
+
+/* tabs */
+.tabs{display:flex;gap:.5rem;margin:0 0 1rem;position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bg);padding:.4rem 0}
+.tab{flex:1 1 0;border:2px solid var(--line);background:var(--card);border-radius:999px;padding:.6rem 1rem;font-weight:800;cursor:pointer}
+.tab[aria-selected="true"]{background:var(--green);border-color:var(--green);color:#fff}
+:root[data-theme="dark"] .tab[aria-selected="true"]{color:#13201A}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .tab[aria-selected="true"]{color:#13201A}}
+[hidden]{display:none!important}
+
+/* form */
+.panel{background:var(--card);border:1px solid var(--line);border-radius:22px;padding:1.3rem 1.2rem}
+.intro{margin:0 0 1rem;color:var(--muted)}
+fieldset{border:0;margin:0;padding:1rem 0;border-top:1px solid var(--line)}
+fieldset:first-of-type{border-top:0;padding-top:.2rem}
+legend{font-weight:800;padding:0;margin-bottom:.6rem;font-size:1.03rem}
+.section-title{font-size:1.05rem;margin:1.4rem 0 .2rem}
+.hint{font-size:.88rem;color:var(--muted);margin:-.35rem 0 .6rem}
+.opts{display:flex;flex-wrap:wrap;gap:.5rem}
+.opt{position:relative}
+.opt input{position:absolute;opacity:0;width:1px;height:1px}
+.opt span{display:inline-flex;align-items:center;gap:.4rem;border:2px solid var(--line);border-radius:999px;padding:.45rem .95rem;cursor:pointer;background:var(--card);transition:background .15s,border-color .15s}
+.opt input[type=checkbox]+span::before{content:"";width:1rem;height:1rem;border:2px solid var(--leaf);border-radius:5px;flex:0 0 auto}
+.opt input[type=checkbox]:checked+span::before{background:var(--leaf);box-shadow:inset 0 0 0 2px var(--card)}
+.opt input:checked+span{background:var(--whey);border-color:var(--green);font-weight:700}
+.opt input:focus-visible+span{outline:3px solid var(--wheat);outline-offset:2px}
+fieldset.invalid legend{color:var(--err)}
+fieldset.invalid .opts .opt span{border-color:var(--err)}
+.range-row{display:flex;align-items:center;gap:1rem}
+input[type=range]{flex:1;accent-color:var(--green);height:2rem}
+.range-val{font-family:'Unbounded',sans-serif;font-size:1.5rem;color:var(--green);min-width:2.2rem;text-align:center}
+.range-ends{display:flex;justify-content:space-between;font-size:.85rem;color:var(--muted)}
+textarea{width:100%;min-height:90px;border:2px solid var(--line);border-radius:14px;padding:.7rem .85rem;background:var(--card);resize:vertical}
+.submit-row{display:flex;flex-wrap:wrap;align-items:center;gap:1rem;margin-top:1.2rem}
+.btn{background:var(--green);color:#fff;border:0;border-radius:999px;padding:.75rem 2rem;font-weight:800;font-size:1.05rem;cursor:pointer}
+.btn:hover{background:var(--green-d)}
+.btn[disabled]{opacity:.55;cursor:not-allowed}
+:root[data-theme="dark"] .btn{color:#13201A}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .btn{color:#13201A}}
+.btn.ghost{background:transparent;color:var(--green);border:2px solid var(--green)}
+.msg{border-radius:14px;padding:.8rem 1rem;margin:0 0 1rem;font-weight:600}
+.msg.err{background:color-mix(in srgb,var(--err) 12%,transparent);color:var(--err)}
+.msg.ok{background:color-mix(in srgb,var(--leaf) 22%,transparent);color:var(--ink)}
+.msg.info{background:var(--whey);color:var(--ink)}
+
+/* results */
+.filters{display:flex;flex-wrap:wrap;gap:.5rem;align-items:center;margin-bottom:1rem}
+.filters .lbl{font-weight:700;margin-right:.25rem}
+.chip{border:2px solid var(--line);background:var(--card);border-radius:999px;padding:.35rem .9rem;cursor:pointer;font-weight:700}
+.chip[aria-pressed="true"]{background:var(--whey);border-color:var(--green)}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:.8rem;margin-bottom:1rem}
+.stat{background:var(--card);border-left:6px solid var(--leaf);border-radius:14px;padding:.85rem 1rem}
+.stat .v{font-family:'Unbounded',sans-serif;font-size:1.6rem;color:var(--green)}
+.stat .l{font-size:.93rem}
+.summary{background:var(--whey);border-radius:16px;padding:.9rem 1.1rem;margin-bottom:1rem}
+.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:1rem}
+.chart{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:1.1rem 1.1rem 1.2rem;margin-bottom:1rem;min-width:0}
+.chart h3{font-size:.98rem;margin:0 0 .9rem}
+.bar-row{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:.15rem .7rem;margin-bottom:.7rem}
+.bar-row .lab{font-size:.95rem}
+.bar-row .val{font-size:.9rem;font-weight:800;text-align:right;white-space:nowrap}
+.track{grid-column:1/-1;height:.75rem;background:var(--track);border-radius:999px;overflow:hidden}
+.fill{height:100%;border-radius:999px;transition:width .5s ease}
+@media (prefers-reduced-motion: reduce){.fill{transition:none}}
+.donut-wrap{display:flex;align-items:center;gap:1.2rem;flex-wrap:wrap}
+.donut{width:150px;height:150px;border-radius:50%;flex:0 0 auto;position:relative}
+.donut::after{content:"";position:absolute;inset:26%;background:var(--card);border-radius:50%}
+.donut .c{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;z-index:1;font-family:'Unbounded',sans-serif;font-size:1.3rem;color:var(--green)}
+.legend{list-style:none;margin:0;padding:0;flex:1 1 140px;min-width:0}
+.legend li{display:flex;align-items:center;gap:.5rem;font-size:.93rem;margin:.25rem 0}
+.legend i{width:.85rem;height:.85rem;border-radius:4px;flex:0 0 auto}
+.legend b{margin-left:auto;white-space:nowrap}
+.cols{display:flex;align-items:flex-end;gap:.6rem;height:170px;padding-top:1.4rem}
+.col{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;height:100%}
+.col .bar{width:100%;max-width:56px;border-radius:10px 10px 4px 4px;position:relative;transition:height .5s ease;min-height:3px}
+.col .bar span{position:absolute;top:-1.4rem;left:0;right:0;text-align:center;font-weight:800;font-size:.9rem}
+.col .x{margin-top:.35rem;font-weight:700}
+.comments{list-style:none;padding:0;margin:0}
+.comments li{border-left:4px solid var(--leaf);padding:.4rem .8rem;margin:.5rem 0;background:var(--whey);border-radius:0 10px 10px 0}
+.empty{text-align:center;padding:2rem 1rem}
+.foot{margin-top:2rem;font-size:.85rem;color:var(--muted);text-align:center}
+@media (max-width:520px){
+  body{font-size:16px}
+  .hero{padding:1.2rem}
+  .hero svg{width:70px;height:88px}
+  .panel{padding:1rem .9rem}
+  .live{min-width:0;flex:1 1 100%;display:flex;align-items:center;justify-content:center;gap:.8rem}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="hero">
+    <svg viewBox="0 0 120 150" width="92" height="115" aria-hidden="true">
+      <path d="M60 6 C60 6 14 66 14 98 a46 46 0 0 0 92 0 C106 66 60 6 60 6 Z" fill="var(--card)" stroke="var(--green)" stroke-width="4"/>
+      <path d="M40 104 a20 20 0 1 0 9 -19" fill="none" stroke="var(--leaf)" stroke-width="6" stroke-linecap="round"/>
+      <path d="M41 78 l10 6 -10 7" fill="none" stroke="var(--leaf)" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+    <div class="hero-text">
+      <h1>Сарысудың екінші өмірі</h1>
+      <p class="sub">Қалдықтан пайдалы өнімге: сарысуды үйде қалай пайдаланамыз және одан не жасауға болады?</p>
+      <div class="people">Жоба авторы: <b>Құнанбай Айназ</b><br>Жетекшісі: <b>Қызырбекова А.Б.</b></div>
+    </div>
+    <div class="live" aria-live="polite">
+      <div class="n" id="liveCount">0</div>
+      <div>
+        <div class="t">қатысушы</div>
+        <div class="status"><span class="dot" id="statusDot"></span><span id="statusText">Қосылуда…</span></div>
+      </div>
+    </div>
+  </header>
+
+  <nav class="tabs" role="tablist" aria-label="Бөлімдер">
+    <button class="tab" role="tab" id="tabSurvey" aria-controls="paneSurvey" aria-selected="true">📝 Сауалнама</button>
+    <button class="tab" role="tab" id="tabResults" aria-controls="paneResults" aria-selected="false">📊 Нәтижелер</button>
+  </nav>
+
+  <!-- SURVEY -->
+  <section id="paneSurvey" role="tabpanel" aria-labelledby="tabSurvey">
+    <div id="formMsg"></div>
+    <form id="survey" class="panel" novalidate>
+      <p class="intro">Сауалнама 2–3 минут алады. Аты-жөніңіз сұралмайды, жауаптар анонимді сақталады. Сарысу — сүттен ірімшік, сүзбе немесе құрт жасағанда бөлініп шығатын сұйықтық.</p>
+
+      <h2 class="section-title">Өзіңіз туралы</h2>
+      <fieldset data-q="grp"><legend>1. Сіз кімсіз?</legend><div class="opts" data-type="radio"></div></fieldset>
+
+      <h2 class="section-title">Сарысу туралы хабардарлық</h2>
+      <fieldset data-q="awareness"><legend>2. Сарысу деген не екенін білесіз бе?</legend><div class="opts" data-type="radio"></div></fieldset>
+      <fieldset data-q="dairy"><legend>3. Үйде сүттен өнім (ірімшік, сүзбе, құрт) жасайсыздар ма?</legend><div class="opts" data-type="radio"></div></fieldset>
+      <fieldset data-q="eco"><legend>4. Сарысуды төгіп тастау қоршаған ортаға зиян деп ойлайсыз ба?</legend><div class="opts" data-type="radio"></div></fieldset>
+
+      <h2 class="section-title">Үйде пайдалану</h2>
+      <fieldset data-q="uses"><legend>5. Үйде сарысуды қалай пайдаланасыздар?</legend><p class="hint">Бірнеше жауапты таңдауға болады.</p><div class="opts" data-type="checkbox"></div></fieldset>
+
+      <h2 class="section-title">Қандай өнім керек?</h2>
+      <fieldset data-q="products"><legend>6. Сарысудан қандай өнім жасалғанын көргіңіз келеді?</legend><p class="hint">Бірнеше жауапты таңдауға болады.</p><div class="opts" data-type="checkbox"></div></fieldset>
+
+      <h2 class="section-title">Қайта пайдалануға көзқарас</h2>
+      <fieldset>
+        <legend><label for="importance">7. Сарысуды қайта пайдалану қаншалықты маңызды?</label></legend>
+        <div class="range-row"><input type="range" id="importance" min="1" max="5" step="1" value="3"><output class="range-val" id="impVal" for="importance">3</output></div>
+        <div class="range-ends"><span>1 — маңызды емес</span><span>5 — өте маңызды</span></div>
+      </fieldset>
+      <fieldset data-q="buy"><legend>8. Сарысудан жасалған өнімді сатып алар ма едіңіз?</legend><div class="opts" data-type="radio"></div></fieldset>
+      <fieldset data-q="barriers"><legend>9. Сарысуды пайдалануға не кедергі?</legend><p class="hint">Бірнеше жауапты таңдауға болады.</p><div class="opts" data-type="checkbox"></div></fieldset>
+      <fieldset>
+        <legend><label for="suggestion">10. Ұсынысыңыз немесе пікіріңіз (міндетті емес)</label></legend>
+        <textarea id="suggestion" maxlength="400" placeholder="Аты-жөніңізді жазбаңыз — жауап анонимді болуы керек."></textarea>
+      </fieldset>
+
+      <div class="submit-row">
+        <button type="submit" class="btn" id="submitBtn">Жауапты жіберу</button>
+      </div>
+    </form>
+  </section>
+
+  <!-- RESULTS -->
+  <section id="paneResults" role="tabpanel" aria-labelledby="tabResults" hidden>
+    <div id="results"></div>
+  </section>
+
+  <p class="foot">Жауаптар аты-жөнсіз, тек «Сарысудың екінші өмірі» жобасының зерттеуі үшін жиналады.</p>
+</div>
+
+<script>
+(function(){
+"use strict";
+
+/* ---------- Сұрақ нұсқалары ---------- */
+const Q = {
+  grp: ["Оқушы","Ата-ана","Мұғалім","Басқа"],
+  awareness: ["Иә, жақсы білемін","Естігенім бар","Білмеймін"],
+  dairy: ["Иә, жиі","Кейде","Жоқ"],
+  eco: ["Иә, зиян","Зияны аз","Зиянсыз","Білмеймін"],
+  uses: ["Сусын ретінде ішеміз","Қамыр илеуге (нан, бауырсақ)","Құрт, ірімшік жасауға","Малға, үй құстарына береміз","Өсімдіктерді суарамыз","Шаш пен тері күтіміне","Төгіп тастаймыз","Үйде сарысу болмайды"],
+  products: ["Жеміс қосылған сусын","Протеинді коктейль","Нан мен тоқаш","Кәмпит, десерт","Сабын, шампунь, косметика","Табиғи тыңайтқыш","Мал азығына қоспа","Биоқаптама, биопластик"],
+  buy: ["Иә","Мүмкін","Жоқ"],
+  barriers: ["Дәмі ұнамайды","Тез бұзылады","Қалай пайдаланатынын білмеймін","Уақыт жетпейді","Дайын өнім сатылмайды","Кедергі жоқ"]
+};
+const SINGLE = ["grp","awareness","dairy","eco","buy"];
+const MULTI = ["uses","products","barriers"];
+const LS_KEY = "sarysu-survey-local-v1";
+const COLORS = ["--c1","--c2","--c3","--c4","--c5","--c6","--c7","--c8"].map(v=>`var(${v})`);
+
+const $ = s => document.querySelector(s);
+const el = (tag, attrs, ...kids) => {
+  const n = document.createElement(tag);
+  if (attrs) for (const [k,v] of Object.entries(attrs)) {
+    if (k === "class") n.className = v;
+    else if (k === "style") n.setAttribute("style", v);
+    else if (k === "text") n.textContent = v;
+    else n.setAttribute(k, v);
+  }
+  for (const k of kids) if (k != null) n.append(k);
+  return n;
+};
+
+/* ---------- Форманы құру ---------- */
+document.querySelectorAll("fieldset[data-q]").forEach(fs => {
+  const key = fs.dataset.q, box = fs.querySelector(".opts"), type = box.dataset.type;
+  Q[key].forEach((label, i) => {
+    const id = `${key}_${i}`;
+    const input = el("input", {type, name:key, id, value:label});
+    box.append(el("label", {class:"opt", for:id}, input, el("span", {text:label})));
+  });
+  fs.addEventListener("change", () => fs.classList.remove("invalid"));
+});
+$("#importance").addEventListener("input", e => { $("#impVal").textContent = e.target.value; });
+
+/* ---------- Қойындылар ---------- */
+function showTab(which){
+  const s = which === "survey";
+  $("#tabSurvey").setAttribute("aria-selected", s);
+  $("#tabResults").setAttribute("aria-selected", !s);
+  $("#paneSurvey").hidden = !s;
+  $("#paneResults").hidden = s;
+}
+$("#tabSurvey").addEventListener("click", () => showTab("survey"));
+$("#tabResults").addEventListener("click", () => showTab("results"));
+
+/* ---------- Деректер көзі ---------- */
+let rows = [];
+let mode = "connecting"; // online | local
+let coll = null;
+let downloads = null;
+let groupFilter = new Set(Q.grp);
+
+function cleanRow(d){
+  if (!d || typeof d !== "object") return null;
+  const r = {};
+  for (const k of SINGLE) { if (!Q[k].includes(d[k])) return null; r[k] = d[k]; }
+  for (const k of MULTI) {
+    const arr = Array.isArray(d[k]) ? d[k].filter(x => Q[k].includes(x)) : [];
+    r[k] = [...new Set(arr)];
+  }
+  const imp = Number(d.importance);
+  r.importance = Number.isInteger(imp) && imp >= 1 && imp <= 5 ? imp : 3;
+  r.suggestion = typeof d.suggestion === "string" ? d.suggestion.slice(0, 400) : "";
+  r.day = typeof d.day === "string" ? d.day.slice(0, 10) : "";
+  return r;
+}
+function loadLocal(){ try { return (JSON.parse(localStorage.getItem(LS_KEY)) || []).map(cleanRow).filter(Boolean); } catch(e){ return []; } }
+function saveLocal(list){ try { localStorage.setItem(LS_KEY, JSON.stringify(list)); return true; } catch(e){ return false; } }
+
+function setStatus(){
+  const dot = $("#statusDot"), txt = $("#statusText");
+  if (mode === "online") { dot.className = "dot on"; txt.textContent = "Онлайн, тірі нәтиже"; }
+  else if (mode === "local") { dot.className = "dot"; txt.textContent = "Демо режим (тек осы құрылғыда)"; }
+  else { dot.className = "dot"; txt.textContent = "Қосылуда…"; }
+}
+
+function goLocal(){
+  mode = "local";
+  rows = loadLocal();
+  setStatus(); renderResults();
+}
+
+async function connect(){
+  setStatus(); renderResults();
+  if (!window.claude || typeof window.claude.use !== "function") { goLocal(); return; }
+  let db = null;
+  try { db = await window.claude.use("db"); } catch(e) { db = null; }
+  try { downloads = await window.claude.use("downloads"); } catch(e) { downloads = null; }
+  if (!db) { goLocal(); return; }
+
+  mode = "online"; setStatus();
+  coll = db.collection("responses");
+  coll.limit(1000).onSnapshot(snap => {
+    rows = snap.docs.map(d => cleanRow(d.data())).filter(Boolean);
+    renderResults();
+  }, err => {
+    $("#statusText").textContent = "Байланыс үзілді — бетті жаңартыңыз";
+    $("#statusDot").className = "dot";
+  });
+
+  // Жауап жазуға рұқсат бар-жоғын тексеру
+  try {
+    const user = await window.claude.use("user");
+    if (user) {
+      const can = await user.can("data.write");
+      if (can === false) {
+        $("#submitBtn").disabled = true;
+        showMsg("info", "Сізде тек нәтижелерді көру рұқсаты бар. Жауап беру үшін бет иесінен «Contributor» (қатысушы) рұқсатын сұраңыз.");
+      }
+    }
+  } catch(e) {}
+}
+
+/* ---------- Жіберу ---------- */
+function showMsg(kind, text){
+  const box = $("#formMsg"); box.replaceChildren();
+  if (text) box.append(el("div", {class:`msg ${kind}`, role: kind === "err" ? "alert" : "status", text}));
+}
+
+$("#survey").addEventListener("submit", async e => {
+  e.preventDefault();
+  const form = e.target, rec = {}, missing = [];
+  for (const k of SINGLE) {
+    const v = form.querySelector(`input[name="${k}"]:checked`);
+    rec[k] = v ? v.value : null;
+    if (!v) missing.push(k);
+  }
+  for (const k of MULTI) {
+    rec[k] = [...form.querySelectorAll(`input[name="${k}"]:checked`)].map(i => i.value);
+    if (!rec[k].length) missing.push(k);
+  }
+  rec.importance = Number($("#importance").value);
+  rec.suggestion = $("#suggestion").value.trim().slice(0, 400);
+  rec.day = new Date().toISOString().slice(0, 10); // тек күні — анонимдік үшін
+
+  document.querySelectorAll("fieldset[data-q]").forEach(fs => fs.classList.toggle("invalid", missing.includes(fs.dataset.q)));
+  if (missing.length) {
+    const nums = [...document.querySelectorAll("fieldset[data-q]")].filter(fs => missing.includes(fs.dataset.q)).map(fs => fs.querySelector("legend").textContent.split(".")[0]);
+    showMsg("err", `Жауап жіберілмеді: ${nums.join(", ")}-сұраққа жауап беріңіз де, қайта жіберіңіз.`);
+    form.querySelector("fieldset.invalid").scrollIntoView({behavior:"smooth", block:"center"});
+    return;
+  }
+
+  const btn = $("#submitBtn"); btn.disabled = true; btn.textContent = "Жіберілуде…";
+  try {
+    if (mode === "online" && coll) {
+      await coll.add(rec);
+    } else {
+      rows = [...rows, cleanRow(rec)];
+      saveLocal(rows);
+      renderResults();
+    }
+    form.reset(); $("#impVal").textContent = "3";
+    showMsg("ok", "Рахмет! Жауабыңыз сақталды. Нәтижелер жаңартылды.");
+    showTab("results");
+    window.scrollTo({top: 0, behavior: "smooth"});
+  } catch(err) {
+    const code = err && err.code;
+    if (code === "quota_exceeded") showMsg("err", "Жауап сақталмады: дерекқор толды. Бет иесіне хабарлаңыз.");
+    else if (code === "resource_exhausted") showMsg("err", "Жауап сақталмады: тым жиі жіберілді. Бірнеше секундтан кейін қайта жіберіңіз.");
+    else showMsg("err", "Жауап сақталмады. Интернет байланысын тексеріп, қайта жіберіңіз. Қайталанса, бет иесінен жауап беру рұқсатын сұраңыз.");
+  } finally {
+    btn.textContent = "Жауапты жіберу";
+    if (!btn.dataset.locked) btn.disabled = false;
+  }
+});
+
+/* ---------- Есептеу ---------- */
+function countSingle(list, key){
+  const m = new Map(Q[key].map(o => [o, 0]));
+  list.forEach(r => m.set(r[key], (m.get(r[key]) || 0) + 1));
+  return Q[key].map(o => ({label:o, n:m.get(o)}));
+}
+function countMulti(list, key){
+  const m = new Map(Q[key].map(o => [o, 0]));
+  list.forEach(r => r[key].forEach(v => m.set(v, m.get(v) + 1)));
+  return Q[key].map(o => ({label:o, n:m.get(o)}));
+}
+const pct = (n, t) => t ? Math.round(n / t * 1000) / 10 : 0;
+
+/* ---------- Диаграммалар ---------- */
+function barChart(title, data, total, color){
+  const card = el("div", {class:"chart"}, el("h3", {text:title}));
+  [...data].sort((a,b) => b.n - a.n).forEach(d => {
+    const p = pct(d.n, total);
+    const fill = el("div", {class:"fill", style:`width:${p}%;background:${color}`});
+    card.append(el("div", {class:"bar-row"},
+      el("div", {class:"lab", text:d.label}),
+      el("div", {class:"val", text:`${d.n} (${p}%)`}),
+      el("div", {class:"track", role:"presentation"}, fill)));
+  });
+  return card;
+}
+function donutChart(title, data){
+  const total = data.reduce((s,d) => s + d.n, 0);
+  let acc = 0; const stops = [];
+  data.forEach((d,i) => {
+    if (!d.n) return;
+    const a = acc / total * 360, b = (acc + d.n) / total * 360;
+    stops.push(`${COLORS[i % COLORS.length]} ${a}deg ${b}deg`); acc += d.n;
+  });
+  const ring = el("div", {class:"donut", role:"img", "aria-label": title + ": " + data.map(d => `${d.label} ${d.n}`).join(", "),
+    style:`background:${stops.length ? `conic-gradient(${stops.join(",")})` : "var(--track)"}`},
+    el("div", {class:"c", text:String(total)}));
+  const legend = el("ul", {class:"legend"});
+  data.forEach((d,i) => legend.append(el("li", null,
+    el("i", {style:`background:${COLORS[i % COLORS.length]}`}),
+    el("span", {text:d.label}),
+    el("b", {text:`${pct(d.n,total)}%`}))));
+  return el("div", {class:"chart"}, el("h3", {text:title}), el("div", {class:"donut-wrap"}, ring, legend));
+}
+function columnChart(title, list){
+  const counts = [1,2,3,4,5].map(v => list.filter(r => r.importance === v).length);
+  const max = Math.max(1, ...counts);
+  const shades = ["var(--c8)","#B9CF85","var(--c2)","#5E9A4C","var(--c1)"];
+  const cols = el("div", {class:"cols", role:"img", "aria-label": title + ": " + counts.map((c,i)=>`${i+1} баға — ${c}`).join(", ")});
+  counts.forEach((c,i) => cols.append(el("div", {class:"col"},
+    el("div", {class:"bar", style:`height:${c / max * 100}%;background:${shades[i]}`}, el("span", {text:String(c)})),
+    el("div", {class:"x", text:String(i+1)}))));
+  return el("div", {class:"chart"}, el("h3", {text:title}), cols);
+}
+function stat(v, l){ return el("div", {class:"stat"}, el("div", {class:"v", text:v}), el("div", {class:"l", text:l})); }
+
+/* ---------- Нәтижелерді салу ---------- */
+function renderResults(){
+  $("#liveCount").textContent = rows.length;
+  const root = $("#results"); root.replaceChildren();
+
+  if (mode === "connecting") { root.append(el("div", {class:"panel empty", text:"Нәтижелер жүктелуде…"})); return; }
+  if (mode === "local") root.append(el("div", {class:"msg info", text:"Демо режим: бет дерекқорға қосылмаған, жауаптар тек осы құрылғыда сақталады. Онлайн жинау үшін бетті claude.ai сілтемесі арқылы ашыңыз."}));
+
+  if (!rows.length) {
+    const b = el("button", {class:"btn", type:"button", text:"Сауалнамаға өту"});
+    b.addEventListener("click", () => showTab("survey"));
+    root.append(el("div", {class:"panel empty"}, el("p", {text:"Әзірге жауап жоқ. Бірінші болып жауап беріңіз."}), b));
+    return;
+  }
+
+  // Топ бойынша сүзгі
+  const filters = el("div", {class:"filters", role:"group", "aria-label":"Топ бойынша сүзу"}, el("span", {class:"lbl", text:"Топ:"}));
+  Q.grp.forEach(g => {
+    const n = rows.filter(r => r.grp === g).length;
+    const c = el("button", {class:"chip", type:"button", "aria-pressed": groupFilter.has(g), text:`${g} (${n})`});
+    c.addEventListener("click", () => { groupFilter.has(g) ? groupFilter.delete(g) : groupFilter.add(g); renderResults(); });
+    filters.append(c);
+  });
+  root.append(filters);
+
+  const list = rows.filter(r => groupFilter.has(r.grp));
+  if (!list.length) { root.append(el("div", {class:"panel empty", text:"Таңдалған топтарда жауап жоқ. Сүзгіге кемінде бір топ қосыңыз."})); return; }
+
+  const n = list.length;
+  const aware = pct(list.filter(r => r.awareness !== "Білмеймін").length, n);
+  const avgImp = (list.reduce((s,r) => s + r.importance, 0) / n).toFixed(1);
+  const buy = pct(list.filter(r => r.buy === "Иә").length, n);
+  root.append(el("div", {class:"stats"},
+    stat(String(n), "қатысушы"),
+    stat(`${Math.round(aware)}%`, "сарысу туралы біледі"),
+    stat(`${avgImp} / 5`, "қайта пайдаланудың маңызы"),
+    stat(`${Math.round(buy)}%`, "өнімді сатып алуға дайын")));
+
+  const products = countMulti(list, "products"), uses = countMulti(list, "uses");
+  const topP = [...products].sort((a,b) => b.n - a.n)[0];
+  const topU = [...uses].sort((a,b) => b.n - a.n)[0];
+  const pour = uses.find(u => u.label === "Төгіп тастаймыз").n;
+  const sum = el("p", {class:"summary"});
+  sum.append("Ең көп сұралған өнім — ", el("b", {text:topP.label}), ` (${pct(topP.n,n)}%). Үйде ең жиі кездесетін тәсіл — `,
+    el("b", {text:topU.label.toLowerCase()}), ` (${pct(topU.n,n)}%). Сарысуды төгіп тастайтындар — `, el("b", {text:`${pct(pour,n)}%`}), ".");
+  root.append(sum);
+
+  root.append(el("div", {class:"grid2"},
+    donutChart("Сарысу туралы хабардарлық", countSingle(list, "awareness")),
+    donutChart("Қатысушылар құрамы", countSingle(list, "grp"))));
+  root.append(barChart("Үйде сарысуды қалай пайдаланады", uses, n, "var(--c1)"));
+  root.append(barChart("Сарысудан қандай өнім көргісі келеді", products, n, "var(--c2)"));
+  root.append(el("div", {class:"grid2"},
+    columnChart("Қайта пайдаланудың маңыздылығы (1–5)", list),
+    donutChart("Өнімді сатып алар ма еді?", countSingle(list, "buy"))));
+  root.append(el("div", {class:"grid2"},
+    donutChart("Төгу табиғатқа зиян ба?", countSingle(list, "eco")),
+    donutChart("Үйде сүт өнімін жасай ма?", countSingle(list, "dairy"))));
+  root.append(barChart("Пайдалануға не кедергі", countMulti(list, "barriers"), n, "var(--c3)"));
+
+  const comments = list.map(r => r.suggestion).filter(Boolean).reverse();
+  const cBox = el("div", {class:"chart"}, el("h3", {text:`Қатысушылардың ұсыныстары (${comments.length})`}));
+  if (!comments.length) cBox.append(el("p", {text:"Ұсыныс әлі жазылмаған."}));
+  else { const ul = el("ul", {class:"comments"}); comments.slice(0, 50).forEach(t => ul.append(el("li", {text:t}))); cBox.append(ul); }
+  root.append(cBox);
+
+  // CSV
+  if (downloads) {
+    const msg = el("span", {class:"hint"});
+    const b = el("button", {class:"btn ghost", type:"button", text:"Нәтижелерді CSV ретінде жүктеу"});
+    b.addEventListener("click", async () => {
+      const head = ["Күні","Топ","Хабардарлық","Сүт өнімін жасау","Табиғатқа зияны","Үйде пайдалану","Қалаған өнімдер","Маңыздылығы","Сатып алу","Кедергілер","Ұсыныс"];
+      const q = v => `"${String(v).replace(/"/g,'""')}"`;
+      const lines = [head.map(q).join(",")].concat(list.map(r => [r.day,r.grp,r.awareness,r.dairy,r.eco,r.uses.join("; "),r.products.join("; "),r.importance,r.buy,r.barriers.join("; "),r.suggestion].map(q).join(",")));
+      try { await downloads.save({filename:"sarysu_natizheler.csv", data:"\uFEFF" + lines.join("\n")}); msg.textContent = ""; }
+      catch(err) { msg.textContent = err && err.code === "declined" ? "" : "Файлды жүктеу мүмкін болмады."; }
+    });
+    root.append(el("div", {class:"submit-row"}, b, msg));
+  }
+}
+
+connect();
+})();
+</script>
+</body>
+</html>
