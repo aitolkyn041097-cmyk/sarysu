@@ -27,10 +27,18 @@ jobs:
       - name: Configure GitHub Pages
         uses: actions/configure-pages@v5
 
+      - name: Prepare static files
+        run: |
+          mkdir -p public
+          cp index.html results.html survey-results.js config.js public/
+          survey_version=$(sha256sum survey-results.js | cut -c1-12)
+          config_version=$(sha256sum config.js | cut -c1-12)
+          sed -i -E "s/survey-results\.js\?v=[a-z0-9]+/survey-results.js?v=${survey_version}/g; s/config\.js\?v=[a-z0-9]+/config.js?v=${config_version}/g" public/index.html public/results.html
+
       - name: Upload static site
         uses: actions/upload-pages-artifact@v4
         with:
-          path: .
+          path: public
 
       - name: Deploy to GitHub Pages
         id: deployment

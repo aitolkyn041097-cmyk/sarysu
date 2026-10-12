@@ -248,7 +248,7 @@ textarea{width:100%;min-height:90px;border:2px solid var(--line);border-radius:1
         <h2 id="fixedResultsTitle">Сауалнама нәтижелері</h2>
         <p>Сауалнамаға <strong data-result-total>116</strong> адам қатысты</p>
       </div>
-      <span class="summary-badge">📊 Демонстрациялық деректер</span>
+      <span class="summary-badge">📊 Google Sheets</span>
     </div>
     <div class="summary-cards" id="fixedResultCards">
       <article class="summary-card" data-result-card="total">
@@ -285,7 +285,8 @@ textarea{width:100%;min-height:90px;border:2px solid var(--line);border-radius:1
   <p class="foot">Жауаптар аты-жөнсіз, тек «Сарысудың екінші өмірі» жобасының зерттеуі үшін жиналады.</p>
 </div>
 
-<script src="survey-results.js?v=476aff6e8047"></script>
+<script src="config.js?v=06ba26fbced2"></script>
+<script src="survey-results.js?v=e06f2ab17368"></script>
 <script>
 (function(){
 "use strict";
@@ -294,7 +295,6 @@ textarea{width:100%;min-height:90px;border:2px solid var(--line);border-radius:1
 const Q = window.SARYSU_SURVEY.Q;
 const SINGLE = ["grp","awareness","dairy","eco","buy"];
 const MULTI = ["uses","products","barriers"];
-const LS_KEY = "sarysu-survey-local-v1";
 const COLORS = ["--c1","--c2","--c3","--c4","--c5","--c6","--c7","--c8"].map(v=>`var(${v})`);
 
 const $ = s => document.querySelector(s);
@@ -334,69 +334,25 @@ $("#tabSurvey").addEventListener("click", () => showTab("survey"));
 $("#tabResults").addEventListener("click", () => showTab("results"));
 
 /* ---------- Деректер көзі ---------- */
-let rows = [];
-let mode = "connecting"; // online | local
-let coll = null;
+let mode = "connecting";
 let groupFilter = new Set(Q.grp);
-
-function cleanRow(d){
-  if (!d || typeof d !== "object") return null;
-  const r = {};
-  for (const k of SINGLE) { if (!Q[k].includes(d[k])) return null; r[k] = d[k]; }
-  for (const k of MULTI) {
-    const arr = Array.isArray(d[k]) ? d[k].filter(x => Q[k].includes(x)) : [];
-    r[k] = [...new Set(arr)];
-  }
-  const imp = Number(d.importance);
-  r.importance = Number.isInteger(imp) && imp >= 1 && imp <= 5 ? imp : 3;
-  r.suggestion = typeof d.suggestion === "string" ? d.suggestion.slice(0, 400) : "";
-  r.day = typeof d.day === "string" ? d.day.slice(0, 10) : "";
-  return r;
-}
-function loadLocal(){ try { return (JSON.parse(localStorage.getItem(LS_KEY)) || []).map(cleanRow).filter(Boolean); } catch(e){ return []; } }
-function saveLocal(list){ try { localStorage.setItem(LS_KEY, JSON.stringify(list)); return true; } catch(e){ return false; } }
-
+let syncing = false;
+let connectionError = "";
+let submitting = false;
 function setStatus(){
-  const dot = $("#statusDot"), txt = $("#statusText");
-  if (mode === "online") { dot.className = "dot on"; txt.textContent = "Онлайн, тірі нәтиже"; }
-  else if (mode === "local") { dot.className = "dot"; txt.textContent = "Демо режим (тек осы құрылғыда)"; }
-  else { dot.className = "dot"; txt.textContent = "Қосылуда…"; }
+  const online = mode === "online";
+  $("#statusDot").className = online ? "dot on" : "dot";
+  $("#statusText").textContent = online ? "Google Sheets · онлайн" : mode === "connecting" ? "Қосылуда…" : "Google Sheets байланысы жоқ";
+  $("#submitBtn").disabled = !online || submitting;
 }
-
-function goLocal(){
-  mode = "local";
-  rows = loadLocal();
-  setStatus(); renderResults();
-}
-
 async function connect(){
-  setStatus(); renderResults();
-  if (!window.claude || typeof window.claude.use !== "function") { goLocal(); return; }
-  let db = null;
-  try { db = await window.claude.use("db"); } catch(e) { db = null; }
-  if (!db) { goLocal(); return; }
-
-  mode = "online"; setStatus();
-  coll = db.collection("responses");
-  coll.limit(1000).onSnapshot(snap => {
-    rows = snap.docs.map(d => cleanRow(d.data())).filter(Boolean);
-    renderResults();
-  }, err => {
-    $("#statusText").textContent = "Байланыс үзілді — бетті жаңартыңыз";
-    $("#statusDot").className = "dot";
-  });
-
-  // Жауап жазуға рұқсат бар-жоғын тексеру
+  if (syncing || submitting) return;
+  syncing = true;
   try {
-    const user = await window.claude.use("user");
-    if (user) {
-      const can = await user.can("data.write");
-      if (can === false) {
-        $("#submitBtn").disabled = true;
-        showMsg("info", "Сізде тек нәтижелерді көру рұқсаты бар. Жауап беру үшін бет иесінен «Contributor» (қатысушы) рұқсатын сұраңыз.");
-      }
-    }
-  } catch(e) {}
+    await window.SARYSU_SURVEY.refresh();
+    mode = "online"; connectionError = "";
+  } catch (error) { mode = "error"; connectionError = error.message; }
+  finally { syncing = false; setStatus(); renderResults(); }
 }
 
 /* ---------- Жіберу ---------- */
@@ -407,6 +363,7 @@ function showMsg(kind, text){
 
 $("#survey").addEventListener("submit", async e => {
   e.preventDefault();
+  if (submitting || mode !== "online") return;
   const form = e.target, rec = {}, missing = [];
   for (const k of SINGLE) {
     const v = form.querySelector(`input[name="${k}"]:checked`);
@@ -419,7 +376,6 @@ $("#survey").addEventListener("submit", async e => {
   }
   rec.importance = Number($("#importance").value);
   rec.suggestion = $("#suggestion").value.trim().slice(0, 400);
-  rec.day = new Date().toISOString().slice(0, 10); // тек күні — анонимдік үшін
 
   document.querySelectorAll("fieldset[data-q]").forEach(fs => fs.classList.toggle("invalid", missing.includes(fs.dataset.q)));
   if (missing.length) {
@@ -429,28 +385,22 @@ $("#survey").addEventListener("submit", async e => {
     return;
   }
 
+  submitting = true;
   const btn = $("#submitBtn"); btn.disabled = true; btn.textContent = "Жіберілуде…";
   try {
-    if (mode === "online" && coll) {
-      await coll.add(rec);
-    } else {
-      const nextRows = [...loadLocal(), cleanRow(rec)];
-      if (!saveLocal(nextRows)) throw new Error("local_storage_unavailable");
-      rows = nextRows;
-      renderResults();
-    }
+    await window.SARYSU_SURVEY.submit(rec);
+    mode = "online";
+    renderResults();
     form.reset(); $("#impVal").textContent = "3";
     showMsg("ok", "Рахмет! Жауабыңыз сақталды. Нәтижелер жаңартылды.");
     showTab("results");
     window.scrollTo({top: 0, behavior: "smooth"});
   } catch(err) {
-    const code = err && err.code;
-    if (code === "quota_exceeded") showMsg("err", "Жауап сақталмады: дерекқор толды. Бет иесіне хабарлаңыз.");
-    else if (code === "resource_exhausted") showMsg("err", "Жауап сақталмады: тым жиі жіберілді. Бірнеше секундтан кейін қайта жіберіңіз.");
-    else showMsg("err", "Жауап сақталмады. Интернет байланысын тексеріп, қайта жіберіңіз. Қайталанса, бет иесінен жауап беру рұқсатын сұраңыз.");
+    showMsg("err", "Сақтау расталмады. Интернет байланысын тексеріп, қайта жіберіңіз. Жауабыңыз формада қалды; қайталау бір жауапты екі рет қоспайды.");
   } finally {
+    submitting = false;
     btn.textContent = "Жауапты жіберу";
-    if (!btn.dataset.locked) btn.disabled = false;
+    btn.disabled = mode !== "online";
   }
 });
 
@@ -502,7 +452,7 @@ function stat(v, l){ return el("div", {class:"stat"}, el("div", {class:"v", text
 
 /* ---------- Бекітілген демонстрациялық статистика ---------- */
 function renderFixedResults(){
-  const data = window.SARYSU_SURVEY.summarize(rows);
+  const data = window.SARYSU_SURVEY.summarize();
   if (!data) return;
   const groupTotal = data.groups.reduce((sum, group) => sum + group.value, 0);
   if (groupTotal !== data.total) return;
@@ -523,20 +473,22 @@ function renderFixedResults(){
 
 /* ---------- Нәтижелерді салу ---------- */
 function renderResults(){
-  const combined = window.SARYSU_SURVEY.summarize(rows).rows;
+  const combined = window.SARYSU_SURVEY.summarize().rows;
   renderFixedResults();
   $("#liveCount").textContent = combined.length;
   const root = $("#results"); root.replaceChildren();
 
   if (mode === "connecting") { root.append(el("div", {class:"panel empty", text:"Нәтижелер жүктелуде…"})); return; }
-  if (mode === "local") root.append(el("div", {class:"msg info", text:"Демо режим: бет дерекқорға қосылмаған, жауаптар тек осы құрылғыда сақталады. "}));
-
-  root.append(el("p", {class:"msg info", text:"116 жауап — демонстрациялық үлгі. Жаңа жауаптар оларға қосылып, сандар мен пайыздар қайта есептеледі. Бірнеше жауапты сұрақтарда пайыздар қосындысы 100%-дан асуы мүмкін."}));
+  if (mode === "error") {
+    root.append(el("div", {class:"msg err", role:"alert", text:connectionError === "SETUP_REQUIRED" ? "Сауалнама әлі қосылмаған. Google Sheets байланысын сайт иесі баптауы керек." : "Google Sheets жүктелмеді. Байланысты тексеріңіз. Бұрын жүктелген нәтижелер ескірген болуы мүмкін."}));
+  }
+  const demoCount = window.SARYSU_SURVEY.summarize().demoCount;
+  root.append(el("p", {class:"msg info", text:`Google Sheets: ${demoCount} демонстрациялық жауап, ${combined.length - demoCount} жаңа жауап. Бірнеше жауапты сұрақтарда пайыздар қосындысы 100%-дан асуы мүмкін.`}));
 
   if (!combined.length) {
     const b = el("button", {class:"btn", type:"button", text:"Сауалнамаға өту"});
     b.addEventListener("click", () => showTab("survey"));
-    root.append(el("div", {class:"panel empty"}, el("p", {text:"Әзірге жауап жоқ. Бірінші болып жауап беріңіз."}), b));
+    root.append(el("div", {class:"panel empty"}, el("p", {text:mode === "error" ? "Нәтижелер қолжетімсіз." : "Әзірге жауап жоқ. Бірінші болып жауап беріңіз."}), b));
     return;
   }
 
@@ -588,10 +540,11 @@ function renderResults(){
 
 }
 
-window.addEventListener("storage", event => {
-  if (mode === "local" && (event.key === LS_KEY || event.key === null)) { rows = loadLocal(); renderResults(); }
-});
+setStatus();
+renderResults();
 connect();
+setInterval(() => { if (!document.hidden && !$("#submitBtn").disabled) connect(); else if (mode === "error") connect(); }, 30000);
+window.addEventListener("focus", () => { if (!$("#submitBtn").disabled || mode === "error") connect(); });
 })();
 </script>
 </body>

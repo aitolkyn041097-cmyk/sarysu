@@ -103,7 +103,7 @@ a{color:inherit}
   </div>
 
   <header class="hero">
-    <span class="eyebrow">📊 Демонстрациялық қорытынды</span>
+    <span class="eyebrow">📊 Google Sheets</span>
     <h1>Сауалнама нәтижелері</h1>
     <p>Сауалнамаға <strong data-total-text>116</strong> адам қатысты</p>
   </header>
@@ -129,7 +129,7 @@ a{color:inherit}
     </section>
   </div>
 
-  <p class="notice">116 жауап — демонстрациялық үлгі. Жаңа жауаптар осы браузерде сақталып, нәтижелерге қосылады. Бірнеше жауапты сұрақтарда пайыздар қосындысы 100%-дан асуы мүмкін.</p>
+  <p class="notice" id="dataNotice" role="status">Google Sheets жүктелуде…</p>
   <div id="answerResults" class="grid"></div>
 
   <div class="actions">
@@ -139,7 +139,8 @@ a{color:inherit}
   <p class="foot">Жаңа жауап жіберілгенде қатысушылар саны мен барлық пайыздар автоматты түрде жаңартылады.</p>
 </main>
 
-<script src="survey-results.js?v=476aff6e8047"></script>
+<script src="config.js?v=06ba26fbced2"></script>
+<script src="survey-results.js?v=e06f2ab17368"></script>
 <script>
 (function(){
   "use strict";
@@ -153,7 +154,8 @@ a{color:inherit}
     return;
   }
 
-  const percent = value => value / data.total * 100;
+  const percent = value => data.total ? value / data.total * 100 : 0;
+  document.querySelector("#dataNotice").textContent = `Google Sheets: ${data.demoCount} демонстрациялық жауап, ${data.total - data.demoCount} жаңа жауап. Бірнеше жауапты сұрақтарда пайыздар қосындысы 100%-дан асуы мүмкін.`;
   const formatPercent = value => `${percent(value).toFixed(1).replace(".", ",")}%`;
   document.querySelectorAll("[data-total-text]").forEach(node => { node.textContent = data.total; });
   document.querySelector(".donut-center span").dataset.count = data.total;
@@ -225,11 +227,19 @@ a{color:inherit}
   document.querySelectorAll("[data-count]").forEach(node => { node.textContent = node.dataset.count; });
   document.querySelectorAll(".fill").forEach(fill => { fill.style.width = `${fill.dataset.width}%`; });
   }
-  render();
-  window.addEventListener("pageshow", render);
-  window.addEventListener("storage", event => {
-    if (event.key === window.SARYSU_SURVEY.storageKey || event.key === null) render();
-  });
+  let syncing = false;
+  async function refresh(){
+    if (syncing) return;
+    syncing = true;
+    try { await window.SARYSU_SURVEY.refresh(); render(); }
+    catch (error) { document.querySelector("#dataNotice").textContent = error.message === "SETUP_REQUIRED" ? "Нәтижелер әлі қосылмаған. Google Sheets байланысын сайт иесі баптауы керек." : "Google Sheets жүктелмеді. Байланысты тексеріңіз. Бұрын жүктелген нәтижелер ескірген болуы мүмкін."; }
+    finally { syncing = false; }
+  }
+  document.querySelectorAll("[data-total-text], [data-count]").forEach(node => { node.textContent = "…"; });
+  refresh();
+  window.addEventListener("pageshow", refresh);
+  window.addEventListener("focus", refresh);
+  setInterval(() => { if (!document.hidden) refresh(); }, 30000);
 })();
 </script>
 </body>
