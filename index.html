@@ -291,16 +291,7 @@ textarea{width:100%;min-height:90px;border:2px solid var(--line);border-radius:1
 "use strict";
 
 /* ---------- Сұрақ нұсқалары ---------- */
-const Q = {
-  grp: ["Оқушы","Ата-ана","Мұғалім","Басқа"],
-  awareness: ["Иә, жақсы білемін","Естігенім бар","Білмеймін"],
-  dairy: ["Иә, жиі","Кейде","Жоқ"],
-  eco: ["Иә, зиян","Зияны аз","Зиянсыз","Білмеймін"],
-  uses: ["Сусын ретінде ішеміз","Қамыр илеуге (нан, бауырсақ)","Құрт, ірімшік жасауға","Малға, үй құстарына береміз","Өсімдіктерді суарамыз","Шаш пен тері күтіміне","Төгіп тастаймыз","Үйде сарысу болмайды"],
-  products: ["Жеміс қосылған сусын","Протеинді коктейль","Нан мен тоқаш","Кәмпит, десерт","Сабын, шампунь, косметика","Табиғи тыңайтқыш","Мал азығына қоспа","Биоқаптама, биопластик"],
-  buy: ["Иә","Мүмкін","Жоқ"],
-  barriers: ["Дәмі ұнамайды","Тез бұзылады","Қалай пайдаланатынын білмеймін","Уақыт жетпейді","Дайын өнім сатылмайды","Кедергі жоқ"]
-};
+const Q = window.SARYSU_SURVEY.Q;
 const SINGLE = ["grp","awareness","dairy","eco","buy"];
 const MULTI = ["uses","products","barriers"];
 const LS_KEY = "sarysu-survey-local-v1";
@@ -346,7 +337,6 @@ $("#tabResults").addEventListener("click", () => showTab("results"));
 let rows = [];
 let mode = "connecting"; // online | local
 let coll = null;
-let downloads = null;
 let groupFilter = new Set(Q.grp);
 
 function cleanRow(d){
@@ -384,7 +374,6 @@ async function connect(){
   if (!window.claude || typeof window.claude.use !== "function") { goLocal(); return; }
   let db = null;
   try { db = await window.claude.use("db"); } catch(e) { db = null; }
-  try { downloads = await window.claude.use("downloads"); } catch(e) { downloads = null; }
   if (!db) { goLocal(); return; }
 
   mode = "online"; setStatus();
@@ -445,8 +434,9 @@ $("#survey").addEventListener("submit", async e => {
     if (mode === "online" && coll) {
       await coll.add(rec);
     } else {
-      rows = [...rows, cleanRow(rec)];
-      saveLocal(rows);
+      const nextRows = [...loadLocal(), cleanRow(rec)];
+      if (!saveLocal(nextRows)) throw new Error("local_storage_unavailable");
+      rows = nextRows;
       renderResults();
     }
     form.reset(); $("#impVal").textContent = "3";
@@ -505,24 +495,14 @@ function donutChart(title, data){
   data.forEach((d,i) => legend.append(el("li", null,
     el("i", {style:`background:${COLORS[i % COLORS.length]}`}),
     el("span", {text:d.label}),
-    el("b", {text:`${pct(d.n,total)}%`}))));
+    el("b", {text:`${d.n} (${pct(d.n,total)}%)`}))));
   return el("div", {class:"chart"}, el("h3", {text:title}), el("div", {class:"donut-wrap"}, ring, legend));
-}
-function columnChart(title, list){
-  const counts = [1,2,3,4,5].map(v => list.filter(r => r.importance === v).length);
-  const max = Math.max(1, ...counts);
-  const shades = ["var(--c8)","#B9CF85","var(--c2)","#5E9A4C","var(--c1)"];
-  const cols = el("div", {class:"cols", role:"img", "aria-label": title + ": " + counts.map((c,i)=>`${i+1} баға — ${c}`).join(", ")});
-  counts.forEach((c,i) => cols.append(el("div", {class:"col"},
-    el("div", {class:"bar", style:`height:${c / max * 100}%;background:${shades[i]}`}, el("span", {text:String(c)})),
-    el("div", {class:"x", text:String(i+1)}))));
-  return el("div", {class:"chart"}, el("h3", {text:title}), cols);
 }
 function stat(v, l){ return el("div", {class:"stat"}, el("div", {class:"v", text:v}), el("div", {class:"l", text:l})); }
 
 /* ---------- Бекітілген демонстрациялық статистика ---------- */
 function renderFixedResults(){
-  const data = window.SARYSU_RESULTS;
+  const data = window.SARYSU_SURVEY.summarize(rows);
   if (!data) return;
   const groupTotal = data.groups.reduce((sum, group) => sum + group.value, 0);
   if (groupTotal !== data.total) return;
@@ -539,40 +519,21 @@ function renderFixedResults(){
     number.textContent = item.value;
   });
 
-  const numbers = document.querySelectorAll(".survey-summary [data-count]");
-  if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-  const animate = node => {
-    const target = Number(node.dataset.count);
-    const start = performance.now();
-    const duration = 900;
-    const tick = now => {
-      const progress = Math.min((now - start) / duration, 1);
-      const eased = 1 - Math.pow(1 - progress, 3);
-      node.textContent = Math.round(target * eased);
-      if (progress < 1) requestAnimationFrame(tick);
-    };
-    requestAnimationFrame(tick);
-  };
-  if (!("IntersectionObserver" in window)) { numbers.forEach(animate); return; }
-  const observer = new IntersectionObserver(entries => {
-    entries.forEach(entry => {
-      if (!entry.isIntersecting) return;
-      numbers.forEach(animate);
-      observer.disconnect();
-    });
-  }, {threshold:.25});
-  observer.observe(document.querySelector(".survey-summary"));
 }
 
 /* ---------- Нәтижелерді салу ---------- */
 function renderResults(){
-  $("#liveCount").textContent = rows.length;
+  const combined = window.SARYSU_SURVEY.summarize(rows).rows;
+  renderFixedResults();
+  $("#liveCount").textContent = combined.length;
   const root = $("#results"); root.replaceChildren();
 
   if (mode === "connecting") { root.append(el("div", {class:"panel empty", text:"Нәтижелер жүктелуде…"})); return; }
-  if (mode === "local") root.append(el("div", {class:"msg info", text:"Демо режим: бет дерекқорға қосылмаған, жауаптар тек осы құрылғыда сақталады. Онлайн жинау үшін бетті claude.ai сілтемесі арқылы ашыңыз."}));
+  if (mode === "local") root.append(el("div", {class:"msg info", text:"Демо режим: бет дерекқорға қосылмаған, жауаптар тек осы құрылғыда сақталады. "}));
 
-  if (!rows.length) {
+  root.append(el("p", {class:"msg info", text:"116 жауап — демонстрациялық үлгі. Жаңа жауаптар оларға қосылып, сандар мен пайыздар қайта есептеледі. Бірнеше жауапты сұрақтарда пайыздар қосындысы 100%-дан асуы мүмкін."}));
+
+  if (!combined.length) {
     const b = el("button", {class:"btn", type:"button", text:"Сауалнамаға өту"});
     b.addEventListener("click", () => showTab("survey"));
     root.append(el("div", {class:"panel empty"}, el("p", {text:"Әзірге жауап жоқ. Бірінші болып жауап беріңіз."}), b));
@@ -582,14 +543,14 @@ function renderResults(){
   // Топ бойынша сүзгі
   const filters = el("div", {class:"filters", role:"group", "aria-label":"Топ бойынша сүзу"}, el("span", {class:"lbl", text:"Топ:"}));
   Q.grp.forEach(g => {
-    const n = rows.filter(r => r.grp === g).length;
+    const n = combined.filter(r => r.grp === g).length;
     const c = el("button", {class:"chip", type:"button", "aria-pressed": groupFilter.has(g), text:`${g} (${n})`});
     c.addEventListener("click", () => { groupFilter.has(g) ? groupFilter.delete(g) : groupFilter.add(g); renderResults(); });
     filters.append(c);
   });
   root.append(filters);
 
-  const list = rows.filter(r => groupFilter.has(r.grp));
+  const list = combined.filter(r => groupFilter.has(r.grp));
   if (!list.length) { root.append(el("div", {class:"panel empty", text:"Таңдалған топтарда жауап жоқ. Сүзгіге кемінде бір топ қосыңыз."})); return; }
 
   const n = list.length;
@@ -617,35 +578,19 @@ function renderResults(){
   root.append(barChart("Үйде сарысуды қалай пайдаланады", uses, n, "var(--c1)"));
   root.append(barChart("Сарысудан қандай өнім көргісі келеді", products, n, "var(--c2)"));
   root.append(el("div", {class:"grid2"},
-    columnChart("Қайта пайдаланудың маңыздылығы (1–5)", list),
+    barChart("Қайта пайдаланудың маңыздылығы (1–5)", [1,2,3,4,5].map(value => ({label:String(value), n:list.filter(r => r.importance === value).length})), n, "var(--c1)"),
     donutChart("Өнімді сатып алар ма еді?", countSingle(list, "buy"))));
   root.append(el("div", {class:"grid2"},
     donutChart("Төгу табиғатқа зиян ба?", countSingle(list, "eco")),
     donutChart("Үйде сүт өнімін жасай ма?", countSingle(list, "dairy"))));
   root.append(barChart("Пайдалануға не кедергі", countMulti(list, "barriers"), n, "var(--c3)"));
 
-  const comments = list.map(r => r.suggestion).filter(Boolean).reverse();
-  const cBox = el("div", {class:"chart"}, el("h3", {text:`Қатысушылардың ұсыныстары (${comments.length})`}));
-  if (!comments.length) cBox.append(el("p", {text:"Ұсыныс әлі жазылмаған."}));
-  else { const ul = el("ul", {class:"comments"}); comments.slice(0, 50).forEach(t => ul.append(el("li", {text:t}))); cBox.append(ul); }
-  root.append(cBox);
 
-  // CSV
-  if (downloads) {
-    const msg = el("span", {class:"hint"});
-    const b = el("button", {class:"btn ghost", type:"button", text:"Нәтижелерді CSV ретінде жүктеу"});
-    b.addEventListener("click", async () => {
-      const head = ["Күні","Топ","Хабардарлық","Сүт өнімін жасау","Табиғатқа зияны","Үйде пайдалану","Қалаған өнімдер","Маңыздылығы","Сатып алу","Кедергілер","Ұсыныс"];
-      const q = v => `"${String(v).replace(/"/g,'""')}"`;
-      const lines = [head.map(q).join(",")].concat(list.map(r => [r.day,r.grp,r.awareness,r.dairy,r.eco,r.uses.join("; "),r.products.join("; "),r.importance,r.buy,r.barriers.join("; "),r.suggestion].map(q).join(",")));
-      try { await downloads.save({filename:"sarysu_natizheler.csv", data:"\uFEFF" + lines.join("\n")}); msg.textContent = ""; }
-      catch(err) { msg.textContent = err && err.code === "declined" ? "" : "Файлды жүктеу мүмкін болмады."; }
-    });
-    root.append(el("div", {class:"submit-row"}, b, msg));
-  }
 }
 
-renderFixedResults();
+window.addEventListener("storage", event => {
+  if (mode === "local" && (event.key === LS_KEY || event.key === null)) { rows = loadLocal(); renderResults(); }
+});
 connect();
 })();
 </script>

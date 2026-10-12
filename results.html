@@ -113,7 +113,7 @@ a{color:inherit}
   <div class="grid">
     <section class="card" aria-labelledby="donutTitle">
       <h2 id="donutTitle">Қатысушылар құрамы</h2>
-      <p class="card-sub">Барлық 116 қатысушының санаттар бойынша үлесі</p>
+      <p class="card-sub">Барлық <span data-total-text>116</span> қатысушының санаттар бойынша үлесі</p>
       <div class="donut-layout">
         <div class="donut" id="donut" role="img" aria-label="Қатысушылар санаттарының дөңгелек диаграммасы">
           <div class="donut-center"><span data-count="116">116</span><small>адам</small></div>
@@ -129,53 +129,23 @@ a{color:inherit}
     </section>
   </div>
 
-  <section class="card scope" aria-labelledby="scopeTitle">
-    <h2 id="scopeTitle">Сауалнама қамтитын тақырыптар</h2>
-    <p class="card-sub">Анкета сарысуды қайта пайдалану туралы пікір мен тәжірибені зерттейді</p>
-    <div class="topics">
-      <div class="topic"><span aria-hidden="true">💡</span><div><b>Хабардарлық</b><small>Сарысу туралы білім деңгейі</small></div></div>
-      <div class="topic"><span aria-hidden="true">🏠</span><div><b>Үйде пайдалану</b><small>Сарысуды қолдану тәсілдері</small></div></div>
-      <div class="topic"><span aria-hidden="true">🥤</span><div><b>Қажетті өнімдер</b><small>Қатысушылар көргісі келетін өнімдер</small></div></div>
-      <div class="topic"><span aria-hidden="true">♻️</span><div><b>Қайта пайдалануға көзқарас</b><small>Маңыздылық, сатып алу және кедергілер</small></div></div>
-    </div>
-    <p class="notice">Бұл бетте тек расталған қатысушылар саны мен санаттары көрсетілген. Қалған сұрақтар бойынша деректер берілмегендіктен, олар үшін нәтиже жасалмады.</p>
-  </section>
-
-  <section class="conclusion" aria-labelledby="conclusionTitle">
-    <div class="conclusion-head">
-      <span class="conclusion-icon" aria-hidden="true">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M3 3v18h18"/><path d="m7 16 4-4 3 3 5-7"/><path d="M16 8h3v3"/>
-        </svg>
-      </span>
-      <div>
-        <p class="conclusion-kicker">Зерттеу қорытындысы</p>
-        <h2 id="conclusionTitle">Сауалнама нәтижесі бойынша қорытынды</h2>
-      </div>
-    </div>
-    <div class="conclusion-highlights" aria-label="Негізгі бағыттар">
-      <span class="conclusion-tag">💡 Ақпараттың жеткіліксіздігі</span>
-      <span class="conclusion-tag">♻️ Қайта пайдалану жолдары</span>
-      <span class="conclusion-tag">🔬 Пайдалы өнімдерді зерттеу</span>
-    </div>
-    <div class="conclusion-text">
-      <p>Сауалнамаға қатысқан адамдардың бір бөлігі ірімшіктің сары суын қалай пайдалануға болатынын білмейтінін және оны бұрын қолданып көрмегенін айтты. Кейбір қатысушылар сары судан сусабын немесе басқа да пайдалы өнімдер жасалса, қызығушылық танытатынын білдірді. Сонымен қатар «Хилак форте» сияқты өнім жасау туралы ұсыныстар да айтылды. Ал қатысушылардың көпшілігі сары суды пайдаланбай, төгіп тастайтынын көрсетті.</p>
-      <p>Сауалнама нәтижелері адамдардың сары судың пайдалы қасиеттері мен оны қайта пайдалану жолдары туралы жеткілікті ақпарат білмейтінін көрсетті. Сондықтан «Ірімшіктің сары суы» жобасы аясында сары судан тағамдық және тұрмыстық мақсаттағы қандай пайдалы өнімдер дайындауға болатынын зерттеп, оның пайдасын көпшілікке таныстыруды мақсат еттік.</p>
-    </div>
-  </section>
+  <p class="notice">116 жауап — демонстрациялық үлгі. Жаңа жауаптар осы браузерде сақталып, нәтижелерге қосылады. Бірнеше жауапты сұрақтарда пайыздар қосындысы 100%-дан асуы мүмкін.</p>
+  <div id="answerResults" class="grid"></div>
 
   <div class="actions">
     <a class="btn" href="index.html"><span aria-hidden="true">←</span> Басты бетке оралу</a>
   </div>
 
-  <p class="foot">Деректер демонстрациялық түрде берілген және форманы толтырғанда автоматты түрде өзгермейді.</p>
+  <p class="foot">Жаңа жауап жіберілгенде қатысушылар саны мен барлық пайыздар автоматты түрде жаңартылады.</p>
 </main>
 
 <script src="survey-results.js"></script>
 <script>
 (function(){
   "use strict";
-  const data = window.SARYSU_RESULTS;
+  function render(){
+  const data = window.SARYSU_SURVEY.summarize();
+  ["stats", "legend", "bars", "answerResults"].forEach(id => document.getElementById(id).replaceChildren());
   if (!data) return;
   const sum = data.groups.reduce((total, group) => total + group.value, 0);
   if (sum !== data.total) {
@@ -185,7 +155,8 @@ a{color:inherit}
 
   const percent = value => value / data.total * 100;
   const formatPercent = value => `${percent(value).toFixed(1).replace(".", ",")}%`;
-  document.querySelector("[data-total-text]").textContent = data.total;
+  document.querySelectorAll("[data-total-text]").forEach(node => { node.textContent = data.total; });
+  document.querySelector(".donut-center span").dataset.count = data.total;
 
   const stats = document.querySelector("#stats");
   const items = [{label:"Барлығы",value:data.total,icon:"👥"}, ...data.groups];
@@ -219,21 +190,45 @@ a{color:inherit}
     bars.append(row);
   });
 
-  const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-  const countUp = node => {
-    const target = Number(node.dataset.count);
-    if (reducedMotion) { node.textContent = target; return; }
-    const start = performance.now();
-    const tick = now => {
-      const progress = Math.min((now - start) / 900, 1);
-      node.textContent = Math.round(target * (1 - Math.pow(1 - progress, 3)));
-      if (progress < 1) requestAnimationFrame(tick);
-    };
-    requestAnimationFrame(tick);
+  const questions = {
+    awareness:"2. Сарысу деген не екенін білесіз бе?",
+    dairy:"3. Үйде сүт өнімін жасайсыздар ма?",
+    eco:"4. Сарысуды төгу табиғатқа зиян ба?",
+    uses:"5. Үйде сарысуды қалай пайдаланасыздар?",
+    products:"6. Сарысудан қандай өнім көргіңіз келеді?",
+    importance:"7. Қайта пайдалану қаншалықты маңызды?",
+    buy:"8. Сарысудан жасалған өнімді сатып алар ма едіңіз?",
+    barriers:"9. Сарысуды пайдалануға не кедергі?"
   };
-  requestAnimationFrame(() => {
-    document.querySelectorAll("[data-count]").forEach(countUp);
-    document.querySelectorAll(".fill").forEach(fill => { fill.style.width = `${fill.dataset.width}%`; });
+  Object.entries(questions).forEach(([key, title]) => {
+    const card = document.createElement("section");
+    card.className = "card";
+    const heading = document.createElement("h2");
+    heading.textContent = title;
+    card.append(heading);
+    const options = key === "importance" ? [1,2,3,4,5] : window.SARYSU_SURVEY.Q[key];
+    options.forEach(option => {
+      const count = data.rows.filter(row => Array.isArray(row[key]) ? row[key].includes(option) : row[key] === option).length;
+      const row = document.createElement("div");
+      row.className = "bar-row";
+      row.style.marginTop = "1rem";
+      const head = document.createElement("div"); head.className = "bar-head";
+      const label = document.createElement("span"); label.className = "bar-label"; label.textContent = option;
+      const value = document.createElement("span"); value.className = "bar-value"; value.textContent = `${count} адам · ${formatPercent(count)}`;
+      head.append(label, value);
+      const track = document.createElement("div"); track.className = "track";
+      const fill = document.createElement("div"); fill.className = "fill"; fill.dataset.width = percent(count); fill.style.background = "var(--green)";
+      track.append(fill); row.append(head, track); card.append(row);
+    });
+    document.querySelector("#answerResults").append(card);
+  });
+  document.querySelectorAll("[data-count]").forEach(node => { node.textContent = node.dataset.count; });
+  document.querySelectorAll(".fill").forEach(fill => { fill.style.width = `${fill.dataset.width}%`; });
+  }
+  render();
+  window.addEventListener("pageshow", render);
+  window.addEventListener("storage", event => {
+    if (event.key === window.SARYSU_SURVEY.storageKey || event.key === null) render();
   });
 })();
 </script>
