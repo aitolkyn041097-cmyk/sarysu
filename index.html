@@ -188,7 +188,6 @@ textarea{width:100%;min-height:90px;border:2px solid var(--line);border-radius:1
       <div class="n" id="liveCount">0</div>
       <div>
         <div class="t">қатысушы</div>
-        <div class="status"><span class="dot" id="statusDot"></span><span id="statusText">Қосылуда…</span></div>
       </div>
     </div>
   </header>
@@ -246,14 +245,14 @@ textarea{width:100%;min-height:90px;border:2px solid var(--line);border-radius:1
     <div class="summary-head">
       <div>
         <h2 id="fixedResultsTitle">Сауалнама нәтижелері</h2>
-        <p>Сауалнамаға <strong data-result-total>116</strong> адам қатысты</p>
+        <p>Сауалнамаға <strong data-result-total>118</strong> адам қатысты</p>
       </div>
       <span class="summary-badge">📊 Демонстрациялық деректер</span>
     </div>
     <div class="summary-cards" id="fixedResultCards">
       <article class="summary-card" data-result-card="total">
         <span class="summary-icon" aria-hidden="true">👥</span>
-        <div class="summary-number" data-count="116">116</div>
+        <div class="summary-number" data-count="118">118</div>
         <div class="summary-label">Барлығы</div>
       </article>
       <article class="summary-card" data-result-card="teachers">
@@ -263,7 +262,7 @@ textarea{width:100%;min-height:90px;border:2px solid var(--line);border-radius:1
       </article>
       <article class="summary-card" data-result-card="students">
         <span class="summary-icon" aria-hidden="true">🎓</span>
-        <div class="summary-number" data-count="45">45</div>
+        <div class="summary-number" data-count="47">47</div>
         <div class="summary-label">Оқушылар</div>
       </article>
       <article class="summary-card" data-result-card="parents">
@@ -285,7 +284,7 @@ textarea{width:100%;min-height:90px;border:2px solid var(--line);border-radius:1
   <p class="foot">Жауаптар аты-жөнсіз, тек «Сарысудың екінші өмірі» жобасының зерттеуі үшін жиналады.</p>
 </div>
 
-<script src="survey-results.js?v=476aff6e8047"></script>
+<script src="survey-results.js?v=118"></script>
 <script>
 (function(){
 "use strict";
@@ -358,9 +357,6 @@ function saveLocal(list){ try { localStorage.setItem(LS_KEY, JSON.stringify(list
 
 function setStatus(){
   const dot = $("#statusDot"), txt = $("#statusText");
-  if (mode === "online") { dot.className = "dot on"; txt.textContent = "Онлайн, тірі нәтиже"; }
-  else if (mode === "local") { dot.className = "dot"; txt.textContent = "Демо режим (тек осы құрылғыда)"; }
-  else { dot.className = "dot"; txt.textContent = "Қосылуда…"; }
 }
 
 function goLocal(){
@@ -531,7 +527,7 @@ function renderResults(){
   if (mode === "connecting") { root.append(el("div", {class:"panel empty", text:"Нәтижелер жүктелуде…"})); return; }
   if (mode === "local") root.append(el("div", {class:"msg info", text:"Демо режим: бет дерекқорға қосылмаған, жауаптар тек осы құрылғыда сақталады. "}));
 
-  root.append(el("p", {class:"msg info", text:"116 жауап — демонстрациялық үлгі. Жаңа жауаптар оларға қосылып, сандар мен пайыздар қайта есептеледі. Бірнеше жауапты сұрақтарда пайыздар қосындысы 100%-дан асуы мүмкін."}));
+  root.append(el("p", {class:"msg info", text:"118 жауап — демонстрациялық үлгі. Жаңа жауаптар оларға қосылып, сандар мен пайыздар қайта есептеледі. Бірнеше жауапты сұрақтарда пайыздар қосындысы 100%-дан асуы мүмкін."}));
 
   if (!combined.length) {
     const b = el("button", {class:"btn", type:"button", text:"Сауалнамаға өту"});

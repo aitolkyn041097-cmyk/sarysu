@@ -22,15 +22,16 @@ function cleanRow(d){
   return r;
 }
 // Synthetic baseline, kept separate from submitted responses and never saved to storage.
-const distributions = {grp:[45,18,20,33], awareness:[28,39,49], dairy:[24,43,49], eco:[62,20,8,26], buy:[48,51,17], importance:[5,9,24,35,43]};
+const baselineSize = 118;
+const distributions = {grp:[47,18,20,33], awareness:[28,39,51], dairy:[24,43,51], eco:[64,20,8,26], buy:[50,51,17], importance:[5,9,24,35,45]};
 function choose(counts, position){
   let cumulative = 0;
   return counts.findIndex(count => (cumulative += count) > position);
 }
-const baseline = Array.from({length:116}, (_, i) => {
+const baseline = Array.from({length:baselineSize}, (_, i) => {
   const row = {};
-  single.forEach((key, j) => { row[key] = Q[key][choose(distributions[key], (i * 37 + j * 19) % 116)]; });
-  row.importance = choose(distributions.importance, (i * 43) % 116) + 1;
+  single.forEach((key, j) => { row[key] = Q[key][choose(distributions[key], (i * 37 + j * 19) % baselineSize)]; });
+  row.importance = choose(distributions.importance, (i * 43) % baselineSize) + 1;
   row.uses = [Q.uses[i < 62 ? 6 : i < 80 ? 7 : i % 6]];
   row.products = [Q.products[(i * 7) % 8]];
   if (i % 3 === 0 && !row.products.includes(Q.products[4])) row.products.push(Q.products[4]);
