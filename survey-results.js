@@ -21,9 +21,9 @@ function cleanRow(d){
   r.importance = Number.isInteger(Number(d.importance)) && d.importance >= 1 && d.importance <= 5 ? Number(d.importance) : 3;
   return r;
 }
-// Synthetic baseline, kept separate from submitted responses and never saved to storage.
-const baselineSize = 118;
-const distributions = {grp:[47,18,20,33], awareness:[28,39,51], dairy:[24,43,51], eco:[64,20,8,26], buy:[50,51,17], importance:[5,9,24,35,45]};
+// Fixed synthetic results. Submitted responses are saved separately and do not change them.
+const baselineSize = 117;
+const distributions = {grp:[47,18,20,32], awareness:[28,39,50], dairy:[24,43,50], eco:[64,20,8,25], buy:[50,51,16], importance:[5,9,24,35,44]};
 function choose(counts, position){
   let cumulative = 0;
   return counts.findIndex(count => (cumulative += count) > position);
@@ -42,8 +42,8 @@ function loadLocal(){
   try { const value = JSON.parse(localStorage.getItem(storageKey)); return Array.isArray(value) ? value.map(cleanRow).filter(Boolean) : []; }
   catch (_) { return []; }
 }
-function summarize(realRows = loadLocal()){
-  const rows = [...baseline, ...realRows.map(cleanRow).filter(Boolean)];
+function summarize(){
+  const rows = [...baseline];
   const groups = [
     {key:"teachers",label:"Мұғалімдер",answer:"Мұғалім",color:"#2F6B45",icon:"👩‍🏫"},
     {key:"students",label:"Оқушылар",answer:"Оқушы",color:"#8DB64A",icon:"🎓"},
